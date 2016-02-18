@@ -1,0 +1,74 @@
+#include <iostream>
+#include "conio.h"
+
+using namespace std;
+
+int contardigitos (int a);
+int sumardigitos (int a);
+int sumarimpares (int a);
+
+void main ()
+{ int a, r, s, si, opcion;
+	do{
+	cout<<"Introducir un numero natural: ";
+	cin>>a;
+	if (a<1)
+	{cout<<"**ERROR** El numero que ingreso es incorrecto "<<endl;
+	cout<<"Por favor ingrese un numero mayor a 0 "<<endl;}
+	  }while (a<1);
+	  
+	do{
+		cout<<"MENU \t\n";
+		cout<<"==== \t\n";
+		cout<<"1.- Contar cantidad de digitos\n";
+		cout<<"2.- Sumar todos los digitos del numero\n";
+		cout<<"3.- Sumar los digitos impares del numero\n";
+	      cout<<"0.- Salir\n";
+		cout<<"Elige una opcion\n";
+		cin>>opcion;
+	switch(opcion){
+		case 1:r=contardigitos(a); 
+		cout<<"La cantidad de digitos es: "<<r<<endl;break;
+		case 2: s=sumardigitos(a);
+		cout<<"La suma de los digitos es: "<<s<<endl;break;
+		case 3: si=sumarimpares(a);
+		cout<<"La suma de los digitos impares es: "<<si<<endl;break;
+		case 0: cout<<"Salir\n";break;
+		default: cout<<"Opcion invalida\n";
+	}
+	getch ();
+	system ("cls");
+}while (opcion!=0);
+	getch ();
+}
+
+int contardigitos (int a)
+{	int c=0;
+	while (a>0)
+		{	a=a/10;
+			c=c+1;
+		}
+	return (c);
+}
+
+int sumardigitos (int a)
+{ int s=0, d;
+	while (a>0)
+	{	d=a % 10;
+		a=a/10;
+		s=s+d;
+	}
+	return (s);
+}
+
+int sumarimpares (int a)
+{int d, s=0;
+	while (a>0)
+	{	d=a % 10;
+		if (d%2 !=0)
+			{s=s+d;
+			}
+		a=a/10;
+	}
+	return (s);
+}

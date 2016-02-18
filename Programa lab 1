@@ -7,9 +7,10 @@ int contardigitos (int a);
 int sumardigitos (int a);
 int sumarimpares (int a);
 int invertirdigitos (int a);
+int onlyimpares (int a);
 
 void main ()
-{ int a, r, s, si, opcion, inv;
+{ int a, r, s, si, opcion, inv, imp;
 	do{
 	cout<<"Introducir un numero natural: ";
 	cin>>a;
@@ -25,6 +26,7 @@ void main ()
 		cout<<"2.- Sumar todos los digitos del numero\n";
 		cout<<"3.- Sumar los digitos impares del numero\n";
 		cout<<"4.- Invertir los digitos del numero\n";
+		cout<<"5.- Numero solo impares\n";
 	      cout<<"0.- Salir\n";
 		cout<<"Elige una opcion\n";
 		cin>>opcion;
@@ -37,6 +39,8 @@ void main ()
 		cout<<"La suma de los digitos impares es: "<<si<<endl;break;
 		case 4: inv=invertirdigitos(a);
 		cout<<"EL nuevo numero es: "<<inv<<endl;break;
+		case 5:  imp=onlyimpares (a);
+		cout<<"EL nuevo numero es: "<<imp<<endl;break;
 		case 0: cout<<"Salir\n";break;
 		default: cout<<"Opcion invalida\n";
 	}
@@ -86,3 +90,5 @@ int invertirdigitos (int a)
 	}
 	return (s);
 }
+
+int onlyimpares (int a)

@@ -6,9 +6,10 @@ using namespace std;
 int contardigitos (int a);
 int sumardigitos (int a);
 int sumarimpares (int a);
+int invertirdigitos (int a);
 
 void main ()
-{ int a, r, s, si, opcion;
+{ int a, r, s, si, opcion, inv;
 	do{
 	cout<<"Introducir un numero natural: ";
 	cin>>a;
@@ -23,6 +24,7 @@ void main ()
 		cout<<"1.- Contar cantidad de digitos\n";
 		cout<<"2.- Sumar todos los digitos del numero\n";
 		cout<<"3.- Sumar los digitos impares del numero\n";
+		cout<<"4.- Invertir los digitos del numero\n";
 	      cout<<"0.- Salir\n";
 		cout<<"Elige una opcion\n";
 		cin>>opcion;
@@ -33,6 +35,8 @@ void main ()
 		cout<<"La suma de los digitos es: "<<s<<endl;break;
 		case 3: si=sumarimpares(a);
 		cout<<"La suma de los digitos impares es: "<<si<<endl;break;
+		case 4: inv=invertirdigitos(a);
+		cout<<"EL nuevo numero es: "<<inv<<endl;break;
 		case 0: cout<<"Salir\n";break;
 		default: cout<<"Opcion invalida\n";
 	}
@@ -68,6 +72,16 @@ int sumarimpares (int a)
 		if (d%2 !=0)
 			{s=s+d;
 			}
+		a=a/10;
+	}
+	return (s);
+}
+
+int invertirdigitos (int a)
+{int d, s=0;
+	while (a>0)
+	{	d=a % 10;
+		s=s*10+d;
 		a=a/10;
 	}
 	return (s);

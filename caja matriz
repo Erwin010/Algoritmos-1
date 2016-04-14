@@ -1,0 +1,54 @@
+#include <iostream>
+#include <conio.h>
+using namespace std;
+#define Fil 20
+#define Col 60 
+
+
+char pantalla [Fil][Col];
+
+void mostrarPantalla(){
+	int i,j;
+	for(i=0;i<Fil;i++){
+		for(j=0;j<Col;j++){
+			cout<<pantalla[i][j];
+		}
+		cout<<endl;
+	}
+}
+
+void dibujarlinhorz(int x1, int y1, int x2, int y2){
+	int i;
+	for(i=y1;i<y2;i++){
+		pantalla[x1][i]=char(196);
+	}
+}
+
+void dibujarlinvert(int x1, int y1, int x2, int y2){
+	int i;
+	for(i=x1;i<x2;i++){
+		pantalla[i][y1]=char(179);
+	}
+}
+
+void dibujarCaja(int x1, int y1, int x2, int y2){
+	dibujarlinhorz(x1,y1,x1,y2);
+	dibujarlinvert(x1,y1,x2,y1);
+	dibujarlinhorz(x2,y1,x2,y2);
+	dibujarlinvert(x1,y2,x2,y2);
+	pantalla[x1][y1] = char (218);
+	pantalla[x1][y2] = char (191);
+	pantalla[x2][y1] = char (192);
+	pantalla[x2][y2] = char (217);
+}
+
+void dibujarCaja3D(int x1, int y1, int x2, int y2){
+	dibujarCaja(x1,y1,x1,y2);
+}
+
+
+void main(){
+	dibujarCaja3D(5,15,12,35);
+	mostrarPantalla();
+	getch();
+}

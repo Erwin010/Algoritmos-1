@@ -1,0 +1,24 @@
+#include <iostream>
+#include "conio.h"
+#include <string.h>
+using namespace std;
+
+int contarvocales(char nombre[]){
+	int i, n=strlen(nombre), c=0;
+	for(i=0;i<n;i++){
+		if(nombre[i]=='a' || nombre[i]=='e' || nombre[i]=='i' || nombre[i]=='o' || nombre[i]=='u' || nombre[i]=='A' || nombre[i]=='E' || nombre[i]=='I' || nombre[i]=='O' || nombre[i]=='U'){
+			c++;
+		}
+	}
+	return (c);
+}
+
+
+void main (){
+	char nombre[80];
+	cout<<"Ingrese su nombre completo: ";
+	gets(nombre);
+	cout<<"Su nombre contiene "<<contarvocales(nombre)<<" vocales";
+	getch();
+}
+

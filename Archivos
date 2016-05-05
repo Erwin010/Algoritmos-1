@@ -1,0 +1,115 @@
+#include <iostream>
+#include "conio.h"
+#include <stdio.h>
+#include <string.h>
+
+struct regAmigo{
+	int edad;
+	char nombre[30];
+	char sexo;
+	char estado;
+};
+
+using namespace std;
+
+void crearArchivo(char a[]){
+	FILE *ptr;
+	ptr=fopen("amigos.dat","wb");
+	fclose(ptr);
+}
+
+void addAmigo(){
+	FILE *ptr;
+	regAmigo reg;
+	cout<<"Introduzca el nombre : ";
+	do{
+		gets(reg.nombre);
+	}while(strlen(reg.nombre)==0);
+	cout<<"Introduzca la edad : ";
+	cin>>reg.edad;
+	cout<<"Introduzca el sexo <F/M>: ";
+	do{
+		cin>>reg.sexo;
+	}while((reg.sexo!='F')&&(reg.sexo!='M'));
+	reg.estado='A';
+	ptr=fopen("amigos.dat","ab");
+	fwrite(&reg,sizeof(reg),1,ptr);
+	fclose(ptr);
+}
+
+void reporteAmigos(){
+	FILE *ptr;
+	regAmigo reg;
+	int c=0;
+	ptr=fopen("amigos.dat","rb");
+	if(ptr!=NULL){
+		fread(&reg,sizeof(reg),1,ptr);
+		while(feof(ptr)==false){
+			c++;
+			if(reg.estado=='A'){
+				cout<<endl<<c<<".-      "<<reg.nombre<<"      "<<reg.edad<<"                "<<reg.sexo<<endl;
+			}
+			fread(&reg,sizeof(reg),1,ptr);
+		}
+		fclose(ptr);
+	}else{
+		cout<<"Error... El archivo no existe...!!"<<endl;
+	}
+}
+
+void mostrarEdadMayor(){
+	FILE *ptr;
+	regAmigo reg;
+	int edadMay=0;
+	ptr=fopen("amigos.dat","rb");
+	if(ptr!=NULL){
+		fread(&reg,sizeof(reg),1,ptr);
+		while(feof(ptr)==false){
+			if(reg.estado=='A'){
+				if(reg.edad>edadMay){
+					edadMay=reg.edad;
+				}
+			}
+			fread(&reg,sizeof(reg),1,ptr);
+		}
+		cout<<endl<<"La edad mayor es: "<<edadMay<<endl;
+		rewind(ptr);
+		fread(&reg,sizeof(reg),1,ptr);
+		while(feof(ptr)==false){
+			if(reg.estado=='A'){
+				if(reg.edad==edadMay){
+				cout<<endl<<"Y corresponde a la persona: "<<reg.nombre<<endl;
+				}
+			}
+			fread(&reg,sizeof(reg),1,ptr);
+		}
+		//cout<<endl<<"Y corresponde a la persona: "<<nombMay<<endl;
+		fclose(ptr);
+		}else{
+		cout<<"Error... El archivo no existe...!!"<<endl;
+	}
+}
+
+void main(){
+	int opcion;
+	do{
+		cout<<endl<<"       ***<< Menu >>***       "<<endl;
+		cout<<"       1.- Crear Archivo       "<<endl;
+		cout<<"       2.- Agregar Amigo       "<<endl;
+		cout<<"       3.- Mostrar todos los Amigo       "<<endl;
+		cout<<"       4.- Mostrar el amigo que tiene mas edad      "<<endl;
+		cout<<"       0.- Salir       "<<endl;
+		cout<<"       Seleccionar opcion: ";
+		cin>>opcion;
+		switch(opcion){
+			case 1: crearArchivo("amigos.dat");
+				break;
+			case 2: addAmigo();
+				break;
+			case 3: reporteAmigos();
+				break;
+			case 4: mostrarEdadMayor();
+				break;
+		}
+	}while(opcion!=0);
+}

@@ -1,7 +1,9 @@
 #include <iostream>
-#include "conio.h"
-#include <stdio.h>
+#include <conio.h>
 #include <string.h>
+#include <stdio.h>
+
+using namespace std;
 
 struct regProducto{
 	int idProd;
@@ -10,170 +12,262 @@ struct regProducto{
 	int precio;
 };
 
-struct regVenta{
+struct regVentas{
 	int idVenta;
-	char fecha[30];
-	int cantidad;
+	char fecha[10];
+	int cantVend;	
 	int idProd;
 };
 
-using namespace std;
+struct regCompra{
+	int idCompra;
+	char fecha[10];
+	int cantidad;	
+	int idProd;
+};
 
-void crearArchivo(char a[]){
+void crearArchivo(char nomArch[]){
 	FILE *ptr;
-	ptr=fopen("producto.dat","wb");
-	fclose(ptr);
-}
-
-void crearArchivo2(char a[]){
-	FILE *ptr;
-	ptr=fopen("venta.dat","wb");
+	ptr = fopen(nomArch,"wb");	
 	fclose(ptr);
 }
 
 void addProducto(){
 	FILE *ptr;
 	regProducto reg;
-	cout<<"Introduzca el ID del producto : ";
-	cin>>reg.idProd;
-	cout<<"Introduzca el nombre del producto : ";
+	cout << "Introducir idProd : ";
+	cin >> reg.idProd;
+	cout << "Introducir nombre del producto : ";
 	do{
 		gets(reg.nombre);
-	}while(strlen(reg.nombre)==0);
-	cout<<"Introduzca la cantidad en stock del producto : ";
-	cin>>reg.stock;
-	cout<<"Introduzca el precio del producto : ";
-	cin>>reg.precio;
-	ptr=fopen("producto.dat","ab");
-	fwrite(&reg,sizeof(reg),1,ptr);
-	fclose(ptr);
+	}while(strlen(reg.nombre) == 0);
+	cout << "Precio : ";
+	cin  >> reg.precio;
+	reg.stock = '0';
+	ptr = fopen("producto.dat","ab");
+	fwrite(&reg,sizeof(reg),1,ptr);//escribe registro en el archivo
+	fclose(ptr);	
 }
 
-void reporteProducto(){
+void reporteProductos(){
 	FILE *ptr;
 	regProducto reg;
-	int c=0;
-	ptr=fopen("producto.dat","rb");
-	if(ptr!=NULL){
-		fread(&reg,sizeof(reg),1,ptr);
-		cout<<endl<<" ID PRODUCTO    "<<"     NOMBRE    "<<"      STOCK      "<<"     PRECIO     "<<endl;
-		while(feof(ptr)==false){
-			c++;
-			cout<<endl<<c<<".-      "<<reg.idProd<<"      "<<reg.nombre<<"                "<<reg.stock<<"                "<<reg.precio<<endl;
-			fread(&reg,sizeof(reg),1,ptr);
+	int c = 0;
+	ptr = fopen("producto.dat","rb");
+	if(ptr != NULL){
+		cout<<"\n\n====================================================================";
+		cout<<"\n         *********** REPORTE DE PRODUCTO **************   ";
+		cout<<"\n-------------------------------------------------------------------";
+		cout<<"\n NroRegistro        idProd      Nombre     stock  precio";
+		cout<<"\n-------------------------------------------------------------------";
+		fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
+		while(feof(ptr) == false){
+			c++;			
+			cout <<endl<<"\t"<<c<<"\t"<<reg.idProd<<"\t"<<reg.nombre<<"\t"<<reg.stock<<"\t"<<reg.precio;
+			fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
 		}
-		fclose(ptr);
+		fclose(ptr);	
+		cout<<"\n====================================================================";
 	}else{
-		cout<<"Error... El archivo no existe...!!"<<endl;
+		cout << "\nError.... No existe el archivo...!!!\n"; 
 	}
 }
 
-//bool verifExisteProducto (int idProd){
+// **************************** V ENTAS****************
 
-//}
 
-void addVenta(){
+bool verifExisteProducto(int ip){
+	bool k = false;
 	FILE *ptr;
-	regVenta reg;
-	cout<<"Introduzca el ID de la venta : ";
-	cin>>reg.idVenta;
-	cout<<"Introduzca la fecah de la venta : ";
+	regProducto reg;	
+	ptr = fopen("producto.dat","rb");
+	if(ptr != NULL){		
+		fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
+		while((feof(ptr) == false) && (k == false)){
+			if(reg.idProd == ip){
+				k = true;
+			}
+			fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
+		}
+		fclose(ptr);			
+	}else{
+		cout << "\nError.... No existe el archivo...!!!\n"; 
+	}
+	return(k);
+}
+void addVentas(){
+	FILE *ptr;
+	regVentas reg;
+	cout << "Introducir idVenta: ";
+	cin >> reg.idVenta;
+	cout << "Introducir fecha : ";
+	cin >> reg.fecha;	
+	cout << "Cantidad Vendida : ";
+	cin  >> reg.cantVend;
 	do{
-		gets(reg.fecha);
-	}while(strlen(reg.fecha)==0);
-	cout<<"Introduzca la cantidad de la venta : ";
-	cin>>reg.cantidad;
-	cout<<"Introduzca el ID del Producto : ";
-	//do{
-		cin>>reg.idProd;
-	//}while(verifExisteProducto(reg.idProd)==True);
-	ptr=fopen("venta.dat","ab");
-	fwrite(&reg,sizeof(reg),1,ptr);
-	fclose(ptr);
+		cout << "Introducir idProd del producto vendido: ";
+		cin >> reg.idProd;
+	}while(verifExisteProducto(reg.idProd) == false);
+	ptr = fopen("ventas.dat","ab");
+	fwrite(&reg,sizeof(reg),1,ptr);//escribe registro en el archivo
+	fclose(ptr);	
 }
 
-void reporteVenta(){
+void reporteVentas(){
 	FILE *ptr;
-	regVenta reg;
-	int c=0;
-	ptr=fopen("venta.dat","rb");
-	if(ptr!=NULL){
-		fread(&reg,sizeof(reg),1,ptr);
-		cout<<endl<<" ID VENTA    "<<"     FECHA     "<<"      CANTIDAD      "<<"     ID PRODUCTO     "<<endl;
-		while(feof(ptr)==false){
-			c++;
-			cout<<endl<<c<<".-      "<<reg.idVenta<<"      "<<reg.fecha<<"                "<<reg.cantidad<<"                "<<reg.idProd<<endl;
-			fread(&reg,sizeof(reg),1,ptr);
+	regVentas reg;
+	int c = 0;
+	ptr = fopen("ventas.dat","rb");
+	if(ptr != NULL){
+		cout<<"\n\n====================================================================";
+		cout<<"\n         *********** REPORTE DE VENTAS **************   ";
+		cout<<"\n-------------------------------------------------------------------";
+		cout<<"\n NroRegistro        idVenta      Fecha     cantiVend  idProd";
+		cout<<"\n-------------------------------------------------------------------";
+		fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
+		while(feof(ptr) == false){
+			c++;			
+			cout <<endl<<"\t"<<c<<"\t"<<reg.idVenta<<"\t"<<reg.fecha<<"\t"<<reg.cantVend<<"\t"<<reg.idProd;
+			fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
 		}
-		fclose(ptr);
+		fclose(ptr);	
+		cout<<"\n====================================================================";
 	}else{
-		cout<<"Error... El archivo no existe...!!"<<endl;
+		cout << "\nError.... No existe el archivo...!!!\n"; 
 	}
 }
 
-void reporteTotal(){
+regProducto obtProducto(int ip){	
 	FILE *ptr;
-	regVenta reg;
-	regProducto regProd;
-	int c=0,tot=0;
-	ptr=fopen("venta.dat","rb");
-	if(ptr!=NULL){
-		cout<<"============================================================"<<endl;
-		cout<<"       ***********REPORTE DE VENTAS************         "<<endl;
-		cout<<"------------------------------------------------------------"<<endl;
-		cout<<"Nro Registro      ID Venta        Fecha       Producto       Cantidad Vendida       Precio Unitario             Precio Total"<<endl;
-		cout<<"------------------------------------------------------------"<<endl;
-		fread(&reg,sizeof(reg),1,ptr);
-		while(feof(ptr)==false){
-			regProd = obtProducto(reg.idProd);
-			c++;
-			cout<<endl<<c<<".-      "<<reg.idVenta<"      "<<reg.fecha<<"                "<<regProd.nombre<<"                "<<reg.cantidad<<"                "<<regProd.precio<<"                "<<reg.cantidad*regProd.precio<<endl;
-			tot=tot+(reg.cantidad*regProd.precio);
-			fread(&reg,sizeof(reg),1,ptr);
+	regProducto reg;	
+	ptr = fopen("producto.dat","rb");
+	if(ptr != NULL){		
+		fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
+		while((feof(ptr) == false) && (reg.idProd != ip)){			
+			fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
 		}
-		fclose(ptr);
-		cout<<"------------------------------------------------------------"<<endl;
-		cout<<"Total General de Ventas"<<tot<<endl;
-		cout<<"------------------------------------------------------------"<<endl;
+		fclose(ptr);			
 	}else{
-		cout<< "ERROR NO EXISTE EL ARCHIVO"<<end;
+		cout << "\nError.... No existe el archivo...!!!\n"; 
+	}
+	return(reg);
+}
+
+void addCompra(){
+	FILE *ptr;
+	regCompra reg;
+	cout << "Introducir idCompra : ";
+	cin >> reg.idCompra;
+	cout << "Introducir la fecha : ";
+	cin >> reg.fecha;	
+	cout << "Cantidad : ";
+	cin  >> reg.cantidad;
+	do{
+		cout << "Introducir idProd del producto comprado: ";
+		cin >> reg.idProd;
+	}while(verifExisteProducto(reg.idProd) == false);
+	ptr = fopen("compra.dat","ab");
+	fwrite(&reg,sizeof(reg),1,ptr);//escribe registro en el archivo
+	fclose(ptr);	
+}
+
+void reporteCompra(){
+	FILE *ptr;
+	regCompra reg;
+	int c = 0;
+	ptr = fopen("compra.dat","rb");
+	if(ptr != NULL){
+		cout<<"\n\n====================================================================";
+		cout<<"\n         *********** REPORTE DE VENTAS **************   ";
+		cout<<"\n-------------------------------------------------------------------";
+		cout<<"\n NroRegistro        idVenta      Fecha     cantiVend  idProd";
+		cout<<"\n-------------------------------------------------------------------";
+		fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
+		while(feof(ptr) == false){
+			c++;			
+			cout <<endl<<"\t"<<c<<"\t"<<reg.idCompra<<"\t"<<reg.fecha<<"\t"<<reg.cantidad<<"\t"<<reg.idProd;
+			fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
+		}
+		fclose(ptr);	
+		cout<<"\n====================================================================";
+	}else{
+		cout << "\nError.... No existe el archivo...!!!\n"; 
+	}
+}
+
+void reporteVentasConTotales(){
+	FILE *ptr;
+	regVentas reg;
+	regProducto regProd;
+	int c = 0,tot=0;
+	ptr = fopen("ventas.dat","rb");
+	if(ptr != NULL){
+		cout<<"\n\n====================================================================";
+		cout<<"\n         *********** REPORTE DE VENTAS **************   ";
+		cout<<"\n-------------------------------------------------------------------";
+		cout<<"\n NroRegistro     idVenta   Fecha   Producto cantiVend  PrecUnit PrecioTotal";
+		cout<<"\n-------------------------------------------------------------------";
+		fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
+		while(feof(ptr) == false){
+			regProd = obtProducto(reg.idProd);
+			c++;			
+			cout <<endl<<"\t"<<c<<"\t"<<reg.idVenta<<"\t"<<reg.fecha<<"\t"<<regProd.nombre<<"\t"
+				 <<reg.cantVend<<"\t"<<regProd.precio<<"\t"<<reg.cantVend*regProd.precio;
+			tot = tot + (reg.cantVend*regProd.precio);
+			fread(&reg,sizeof(reg),1,ptr);//lee desde el archivo
+		}
+		fclose(ptr);	
+		cout<<"\n-------------------------------------------------------------------";
+		cout<<"\n              Total general de ventas ----------->>> : "<<tot;
+		cout<<"\n====================================================================";
+	}else{
+		cout << "\nError.... No existe el archivo...!!!\n"; 
 	}
 }
 
 void main(){
 	int opcion;
 	do{
-		cout<<endl<<"       ***<< Menu >>***       "<<endl;
-		cout<<"================================================"<<endl;
-		cout<<"       1.- Crear Archivo producto      "<<endl;
-		cout<<"       2.- Agregar Producto       "<<endl;
-		cout<<"       3.- Mostrar todos los Productos       "<<endl;
-		cout<<"--------------------------------------------------"<<endl;
-		cout<<"       4.- Crear Archivo Ventas      "<<endl;
-		cout<<"       5.- Agregar nueva Venta       "<<endl;
-		cout<<"       6.- Mostrar todas las Ventas       "<<endl;
-		cout<<"--------------------------------------------------"<<endl;
-		cout<<"       7.- Reporte de ventas con totales       "<<endl;
-		cout<<"--------------------------------------------------"<<endl;
-		cout<<"       0.- Salir       "<<endl;
-		cout<<"--------------------------------------------------"<<endl;
-		cout<<"       Seleccionar opcion: ";
-		cin>>opcion;
+		cout <<"\n\n\t\t**** M E N U *****";
+		cout <<"\n\t1.- Crear archivo Producto";
+		cout <<"\n\t2.- Agregar nuevo Producto";
+		cout <<"\n\t3.- Mostrar todos los Productos";		
+		cout <<"\n\-------------------------------------------";
+		cout <<"\n\t4.- Crear archivo Ventas";
+		cout <<"\n\t5.- Agregar nueva venta";
+		cout <<"\n\t6.- Mostrar todas las ventas";		
+		cout <<"\n\-------------------------------------------";
+		cout <<"\n\t7.- Crear archivo Compras";
+		cout <<"\n\t8.- Agregar nueva compra";
+		cout <<"\n\t9.- Mostrar todas las compras";		
+		cout <<"\n\-------------------------------------------";
+		cout <<"\n\t10.- Reporte de ventas con totales";
+		cout <<"\n\-------------------------------------------";
+		cout <<"\n\t0.- Salir";
+		cout <<"\n\-------------------------------------------";
+		cout <<"\n\tSeleccione opcion : ";
+		cin >> opcion;
 		switch(opcion){
-			case 1: crearArchivo("producto.dat");
-				break;
-			case 2: addProducto();
-				break;
-			case 3: reporteProducto();
-				break;
-			case 4: crearArchivo2("venta.dat");
-				break;
-			case 5: addVenta();
-				break;
-			case 6: reporteVenta();
-				break;
-			case 7: reporteTotal();
-				break;
+			case 1 : crearArchivo("producto.dat");
+					 break;
+			case 2 : addProducto();	
+					 break;
+			case 3 : reporteProductos();	
+					 break;
+			case 4 : crearArchivo("ventas.dat");
+					 break;
+			case 5 : addVentas();	
+					 break;
+			case 6 : reporteVentas();	
+					 break;
+			case 7 : crearArchivo("compra.dat");
+					 break;
+			case 8 : addCompra();	
+					 break;
+			case 9 : reporteCompra();	
+					 break;
+			case 10 : reporteVentasConTotales();
+					 break;			
 		}
-	}while(opcion!=0);
+	}while(opcion != 0);
 }
